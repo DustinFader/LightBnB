@@ -44,11 +44,3 @@ CREATE TABLE property_reviews (
   "rating" SMALLINT NOT NULL DEFAULT 0,
   "message" TEXT
 );
-
--- ALTER TABLE "properties" ADD FOREIGN KEY ("owner_id") REFERENCES "users" ("id") ON DELETE CASCADE;
-
--- ALTER TABLE "reservations" ADD FOREIGN KEY ("guest_id") REFERENCES "users" ("id") ON DELETE CASCADE;
-
--- ALTER TABLE "property_reviews" ADD FOREIGN KEY ("guest_id") REFERENCES "users" ("id") ON DELETE CASCADE;
-
--- ALTER TABLE "reservations" ADD FOREIGN KEY ("property_id") REFERENCES "properties" ("id") ON DELETE CASCADE;
