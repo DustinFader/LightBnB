@@ -98,7 +98,6 @@ const getAllReservations = function (guest_id, limit = 10) {
   }).catch(err => {
     console.log(err);
   });
-  // return getAllProperties(null, 2);
 };
 
 /// Properties
