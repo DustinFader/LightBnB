@@ -93,7 +93,6 @@ const getAllReservations = function (guest_id, limit = 10) {
       console.log(result.rows);
       return result.rows;
     }
-    console.log('yop');
     return null;
   }).catch(err => {
     console.log(err);
@@ -149,8 +148,6 @@ const getAllProperties = function (options, limit = 10) {
     }
   }
 
-
-  // 4
   queryString += `
   GROUP BY properties.id`;
   if (options.minimum_rating) {
@@ -163,11 +160,7 @@ const getAllProperties = function (options, limit = 10) {
   LIMIT $${queryParams.length};
   `;
 
-  // 5
-  console.log(queryString, queryParams);
-
-  // 6
-  return pool.query(queryString, queryParams).then((res) => res.rows);
+  return pool.query(queryString, queryParams).then((res) => res.rows).catch(err => console.log(err));
 };
 
 /**
@@ -211,7 +204,7 @@ const addProperty = function (property) {
       property.city,
       property.province,
       property.post_code,
-      Number(property.owner_id)]).then((res) => res.rows);
+      Number(property.owner_id)]).then((res) => res.rows).catch(err => console.log(err));
 };
 
 module.exports = {
