@@ -17,11 +17,13 @@ const pool = new Pool({
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = function (email) {
-  return pool.query(`
+  const queryString = `
   SELECT *
   FROM users
   WHERE email = LOWER($1);
-  `, [email]).then((result) => {
+  `;
+
+  return pool.query(queryString, [email]).then((result) => {
     if (result.rows.length > 0) {
       return result.rows[0];
     }
@@ -37,11 +39,13 @@ const getUserWithEmail = function (email) {
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithId = function (id) {
-  return pool.query(`
+  const queryString = `
   SELECT *
   FROM users
   WHERE id = $1;
-  `, [id]).then((result) => {
+  `;
+
+  return pool.query(queryString, [id]).then((result) => {
     if (result.rows.length > 0) {
       return result.rows[0];
     }
@@ -57,12 +61,13 @@ const getUserWithId = function (id) {
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser = function (user) {
-
-  return pool.query(`
+  const queryString = `
   INSERT INTO users (name, email, password)
   VALUES ($1, $2, $3)
   RETURNING *;
-  `, [user.name, user.email, user.password]).then((result) => {
+  `;
+
+  return pool.query(queryString, [user.name, user.email, user.password]).then((result) => {
     if (result.rows.length > 0) {
       return result.rows[0];
     }
@@ -80,7 +85,7 @@ const addUser = function (user) {
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function (guest_id, limit = 10) {
-  return pool.query(`
+  const queryString = `
   SELECT reservations.id AS id, title, cost_per_night, start_date, AVG(rating) AS average_rating, properties.*
   FROM property_reviews
   JOIN properties ON properties.id = property_id
@@ -88,7 +93,9 @@ const getAllReservations = function (guest_id, limit = 10) {
   WHERE reservations.guest_id = $1
   GROUP BY reservations.id, title, cost_per_night, number_of_bathrooms, number_of_bedrooms, parking_spaces, properties.id
   ORDER BY start_date
-  LIMIT $2;`, [guest_id, limit]).then(result => {
+  LIMIT $2;`;
+
+  return pool.query(queryString, [guest_id, limit]).then(result => {
     if (result.rows.length > 0) {
       console.log(result.rows);
       return result.rows;
@@ -111,7 +118,7 @@ const getAllProperties = function (options, limit = 10) {
   const queryParams = [];
 
   let queryString = `
-  SELECT properties.*, avg(property_reviews.rating)  as average_rating
+  SELECT properties.*, avg(property_reviews.rating) AS average_rating
   FROM properties
   JOIN property_reviews ON properties.id = property_id`;
 
