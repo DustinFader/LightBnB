@@ -117,38 +117,49 @@ const getAllReservations = function (guest_id, limit = 10) {
 const getAllProperties = function (options, limit = 10) {
   const queryParams = [];
 
+  
+  const buildWhereClause = (options, queryParams) => {
+    let whereClause = '';
+    
+    if (options.city) {
+      queryParams.push(`%${options.city}%`);
+      whereClause += ` AND city LIKE $${queryParams.length} `;
+    }
+  
+    if (options.owner_id) {
+      queryParams.push(Number(options.owner_id));
+      whereClause += ` AND owner_id = $${queryParams.length} `;
+    }
+  
+    if (options.minimum_price_per_night) {
+      queryParams.push(Number(options.minimum_price_per_night) * 100);
+      whereClause += ` AND cost_per_night > $${queryParams.length} `;
+    }
+    
+    if (options.maximum_price_per_night) {
+      queryParams.push(Number(options.maximum_price_per_night) * 100);
+      whereClause += ` AND cost_per_night < $${queryParams.length} `;
+    }
+    return whereClause;
+  };
+  
   let queryString = `
   SELECT properties.*, avg(property_reviews.rating) AS average_rating
   FROM properties
   JOIN property_reviews ON properties.id = property_id
   WHERE 1=1`;
-
-  if (options.city) {
-    queryParams.push(`%${options.city}%`);
-    queryString += ` AND city LIKE $${queryParams.length} `;
-  }
-
-  if (options.owner_id) {
-    queryParams.push(Number(options.owner_id));
-    queryString += ` AND owner_id = $${queryParams.length} `;
-  }
-
-  if (options.minimum_price_per_night) {
-    queryParams.push(Number(options.minimum_price_per_night) * 100);
-    queryString += ` AND cost_per_night > $${queryParams.length} `;
-  }
-
-  if (options.maximum_price_per_night) {
-    queryParams.push(Number(options.maximum_price_per_night) * 100);
-    queryString += ` AND cost_per_night < $${queryParams.length} `;
-  }
-
+  
+  queryString += buildWhereClause(options, queryParams);
+  
   queryString += `
   GROUP BY properties.id`;
+
+  // having clause
   if (options.minimum_rating) {
     queryParams.push(Number(options.minimum_rating));
     queryString += `\nHAVING avg(property_reviews.rating) >= $${queryParams.length} `;
   }
+
   queryParams.push(limit);
   queryString += `
   ORDER BY cost_per_night
