@@ -95,7 +95,7 @@ const getAllReservations = function (guest_id, limit = 10) {
     }
     return null;
   }).catch(err => {
-    console.log(err);
+    console.log(err.message);
   });
 };
 
@@ -160,7 +160,7 @@ const getAllProperties = function (options, limit = 10) {
   LIMIT $${queryParams.length};
   `;
 
-  return pool.query(queryString, queryParams).then((res) => res.rows).catch(err => console.log(err));
+  return pool.query(queryString, queryParams).then((res) => res.rows).catch(err => console.log(err.message));
 };
 
 /**
@@ -204,7 +204,7 @@ const addProperty = function (property) {
       property.city,
       property.province,
       property.post_code,
-      Number(property.owner_id)]).then((res) => res.rows).catch(err => console.log(err));
+      Number(property.owner_id)]).then((res) => res.rows).catch(err => console.log(err.message));
 };
 
 module.exports = {
