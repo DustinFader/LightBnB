@@ -147,7 +147,7 @@ const getAllProperties = function (options, limit = 10) {
   GROUP BY properties.id`;
   if (options.minimum_rating) {
     queryParams.push(Number(options.minimum_rating));
-    queryString += ` HAVING avg(property_reviews.rating) >= $${queryParams.length} `;
+    queryString += `\nHAVING avg(property_reviews.rating) >= $${queryParams.length} `;
   }
   queryParams.push(limit);
   queryString += `
