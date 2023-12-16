@@ -197,7 +197,21 @@ const addProperty = function (property) {
   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
   RETURNING *;`;
 
-  return pool.query(queryString, Object.values(property)).then((res) => res.rows);
+  return pool.query(queryString,
+    [property.title,
+      property.description,
+      Number(property.number_of_bedrooms),
+      Number(property.number_of_bathrooms),
+      Number(property.parking_spaces),
+      Number(property.cost_per_night),
+      property.thumbnail_photo_url,
+      property.cover_photo_url,
+      property.street,
+      property.country,
+      property.city,
+      property.province,
+      property.post_code,
+      Number(property.owner_id)]).then((res) => res.rows);
 };
 
 module.exports = {
